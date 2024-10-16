@@ -6,7 +6,9 @@ const PORT = 3002;
 
 app.use(express.json());
 
-mongoose.connect('mongodb://mongodb:27017/productdb', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect('mongodb://127.0.0.1:27017/productdb', { 
+  // useNewUrlParser: true, useUnifiedTopology: true 
+});
 
 const Product = mongoose.model('Product', {
   name: String,
