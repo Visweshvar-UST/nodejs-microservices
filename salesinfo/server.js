@@ -9,9 +9,9 @@ app.use(express.json());
 
 function connectWithRetry() {
   const connection = mysql.createConnection({
-    host: 'mysql',
+    host: '127.0.0.1',
     user: 'root',
-    password: 'rootpassword',
+    password: 'pass@word1',
     database: 'salesdb'
   });
 
@@ -50,15 +50,15 @@ function setupRoutes(db) {
     const { productId, customerId, quantity } = req.body;
     
     try {
-      const productRes = await axios.get(`http://productinfo:3002/products/${productId}`);
-      const customerRes = await axios.get(`http://customerinfo:3003/customers/${customerId}`);
+      const productRes = await axios.get(`http://127.0.0.1:3002/products/${productId}`);
+      const customerRes = await axios.get(`http://127.0.0.1:3003/customers/${customerId}`);
       
       if (productRes.data && customerRes.data) {
         db.query('INSERT INTO sales (product_id, customer_id, quantity) VALUES (?, ?, ?)', 
           [productId, customerId, quantity], 
           (err, result) => {
             if (err) {
-              res.status(500).json({ error: 'Error creating sale' });
+              res.status(500).json({ error: 'Error creating sale'+err });
             } else {
               res.status(201).json({ message: 'Sale created successfully', id: result.insertId });
             }
@@ -68,7 +68,7 @@ function setupRoutes(db) {
         res.status(400).json({ error: 'Invalid product or customer' });
       }
     } catch (error) {
-      res.status(500).json({ error: 'Error processing sale' });
+      res.status(500).json({ error: 'Error processing sale'+error });
     }
   });
 
